@@ -1,23 +1,32 @@
 # Adaptive Thinking
 
-추론을 얼마나 이어갈지와 언제 답을 낼지를 탐색한 코드 모음입니다.
-현재 구현과 초기 truncation 실험을 한 프로젝트 안에서 구분합니다.
+언어모델의 추론 길이와 중단 시점을 제어하는 실험 코드입니다. 모델이 표현한 confidence를 읽어 추론을 이어가거나 답안을 생성하고, 일반 생성 및 길이 제한 방식과 비교합니다.
 
-| 코드 | 역할 |
+## 주요 기능
+
+- confidence 표현을 파싱하고 추론 계속 여부를 결정하는 생성 루프
+- baseline, 고정 길이, 추가 추론 등 생성 방식별 비교
+- 수학 문제와 GPQA 답안의 형식 검사 및 채점
+- 생성 길이와 정답 여부 분석
+
+## 코드 구조
+
+| 경로 | 역할 |
 |---|---|
-| `baseline.py` | 비교용 생성 흐름 |
-| `ours.py`, `confidence_continue.py` | confidence를 읽고 추론을 계속하는 변형 |
-| `models.py`, `utils.py` | 모델 API와 답안 처리 |
-| `legacy/overthinking/` | 기존 추론을 비율별로 잘라 이어 생성하고 평가하던 초기 실험 |
+| `ours.py` | confidence 기반 추론 제어와 답안 생성 |
+| `confidence_continue.py` | confidence를 확인하며 추론을 이어가는 생성 흐름 |
+| `baseline.py` | 기본 모델 생성과 답안 채점 |
+| `fix_len.py`, `fix_len_llm.py` | 길이를 제어하는 생성 변형 |
+| `models.py` | 모델 API 호출 |
+| `utils.py`, `grader.py` | 답안 추출, 형식 검사, 수학 답안 채점 |
+| `gpqa_diamond_utils.py` | GPQA 선택지 답안 처리와 채점 |
+| `data/` | 벤치마크별 데이터 전처리 |
+| `legacy/overthinking/` | 추론을 여러 지점에서 잘라 후속 답안을 생성하는 실험 |
 
-`overthinking`은 답안 작성자의 정체성보다 추론 길이·중단 시점에 초점이 있어
-이 프로젝트로 묶었습니다. 이는 코드의 동작을 보고 정한 분류이며, 두 구현이
-같은 알고리즘이거나 같은 실험 조건이라는 뜻은 아닙니다.
+## 실행 흐름
 
-기존 상대 import를 보존하기 위해 초기 코드의 디렉터리를 유지했습니다.
-초기 스크립트는 `legacy/overthinking`에서, 현재 스크립트는 이 디렉터리에서
-별도로 실행하는 구조입니다. 과거 설정·데이터·채팅 템플릿은 포함하지 않습니다.
-Hydra/OmegaConf, 모델 API 클라이언트, Transformers 등의 의존성과 비공개
-실행 설정을 별도로 준비해야 합니다. 두 버전의 결과를 합쳐 집계하지 않습니다.
+입력 문제를 읽고 모델에 생성을 요청한 뒤, 생성 방식에 따라 추론을 계속하거나 최종 답안을 받습니다. 답안을 추출해 정답과 비교하고 JSONL로 기록합니다.
 
-공개 범위는 코드와 이 설명입니다. 결과·논문·실험 설정은 비공개로 유지합니다.
+`ours.py`, `baseline.py`, `confidence_continue.py`는 Hydra의 `conf/baseline`을 진입점으로 사용합니다. 모델 연결 정보, 생성 옵션, 입력 경로와 프롬프트를 설정합니다. 주요 의존성은 Hydra/OmegaConf, 모델 API 클라이언트와 Transformers입니다.
+
+추론 구간을 직접 잘라 비교하는 코드는 [Overthinking README](legacy/overthinking/README.md)를 참고하세요.
