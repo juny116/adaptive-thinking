@@ -6,17 +6,17 @@
 
 | 파일 | 역할 |
 |---|---|
-| `generate.py`, `baseline.py` | 문제에 대한 모델 응답 생성 |
-| `overthinking.py` | `<think>` 구간을 추출하고 비율별로 잘라 후속 응답 생성 |
-| `eval_early.py` | 조기 종료 답안 평가 |
+| `generate_vllm.py`, `generate_api.py` | 문제에 대한 모델 응답 생성 |
+| `truncate_reasoning.py` | `<think>` 구간을 추출하고 비율별로 잘라 후속 응답 생성 |
+| `score_truncated_reasoning.py` | 조기 종료 답안 평가 |
 | `evaluate_gpqa.py` | GPQA 답안 평가 |
-| `grader.py`, `utils.py` | 답안 추출, 채점, JSONL 입출력 |
-| `analyze_results.py` | 생성 응답 분석 |
+| `math_grading.py`, `answer_processing.py` | 답안 추출, 채점, JSONL 입출력 |
+| `response_statistics.py` | 생성 응답 분석 |
 | `data/` | 벤치마크별 입력 데이터 처리 |
 
 ## 사용
 
-이 디렉터리에서 `overthinking.py`를 실행합니다. `--base_path`의 `overthinking.jsonl`을 읽고, 같은 경로에 `overthinking_results.jsonl`을 기록합니다. 모델 실행에는 vLLM, PyTorch와 Transformers가 필요합니다.
+이 디렉터리에서 `truncate_reasoning.py`를 실행합니다. `--base_path`의 `overthinking.jsonl`을 읽고, 같은 경로에 `overthinking_results.jsonl`을 기록합니다. 모델 실행에는 vLLM, PyTorch와 Transformers가 필요합니다.
 
 주요 옵션은 다음과 같습니다.
 

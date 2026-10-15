@@ -1,4 +1,4 @@
-# Private inputs, runtime output, and local credentials are never review content.
+# Runtime files and local environment
 __pycache__/
 *.py[cod]
 .env
@@ -29,3 +29,5 @@ outputs/
 checkpoints/
 node_modules/
 .venv/
+
+.ruff_cache/

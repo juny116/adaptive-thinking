@@ -1,0 +1,9 @@
+-r requirements.txt
+matplotlib>=3.7
+scipy>=1.10
+seaborn>=0.12
+pandas>=2
+streamlit>=1.30
+jsonlines>=4
+nest-asyncio>=1.5
+PyYAML>=6
